@@ -1,6 +1,7 @@
 tool
 extends Node
 export(bool) var click_to_run setget run
+signal signal_test
 
 var outfile : File
 var startusec : int = 0
@@ -72,6 +73,11 @@ func run(junk):
 	compare_funcs_time("arrayeval", "arrayeval_auto")
 	compare_funcs_time("dicteval", "dicteval_auto")
 	compare_funcs_time("nulleval", "nulleval_auto")
+	compare_funcs_time("s_int_assign", "d_int_assign")
+	compare_funcs_time("s_str_assign", "d_str_assign")
+	compare_funcs_time("s_math_int", "d_math_int")
+	compare_funcs_time("s_math_flt", "d_math_flt")
+	compare_funcs_time("signal_emitter", "internal_call")
 	outfile.close()
 
 func assign_startusec():
@@ -252,3 +258,90 @@ func nulleval_auto():
 	var x : Object = null
 	for i in 1e6:
 		if x: pass
+
+func d_int_assign():
+	var x
+	for i in range(1e6):
+		x = i
+
+func s_int_assign():
+	var x : int
+	for i in range(1e6):
+		x = i
+
+func d_str_assign():
+	var x
+	for i in range(1e6):
+		x = "This is a really long string that needs to be set to a variable that we are calling x"
+
+func s_str_assign():
+	var x : String
+	for i in range(1e6):
+		x = "This is a really long string that needs to be set to a variable that we are calling x"
+
+func d_math_int():
+	var x = 365789
+	var y = 789012
+	var z
+	for i in range(1e6):
+		z = x + y
+		z = y + x
+		z = x - y
+		z = y - x
+		z = x * y
+		z = y * x
+		z = x % y
+		z = y % x
+
+func s_math_int():
+	var x : int = 365789
+	var y : int = 789012
+	var z : int
+	for i in range(1e6):
+		z = x + y
+		z = y + x
+		z = x - y
+		z = y - x
+		z = x * y
+		z = y * x
+		z = x % y
+		z = y % x
+
+func d_math_flt():
+	var x = 365.789
+	var y = 789.012
+	var z
+	for i in range(1e6):
+		z = x + y
+		z = y + x
+		z = x - y
+		z = y - x
+		z = x * y
+		z = y * x
+		z = x / y
+		z = y / x
+
+func s_math_flt():
+	var x : float = 365.789
+	var y : float = 789.012
+	var z : float
+	for i in range(1e6):
+		z = x + y
+		z = y + x
+		z = x - y
+		z = y - x
+		z = x * y
+		z = y * x
+		z = x / y
+		z = y / x
+
+func internal_call():
+	for i in range (1e6):
+		signal_received()
+	
+func signal_emitter():
+	for i in range (1e6):
+		emit_signal("signal_test")
+
+func signal_received():
+	pass
